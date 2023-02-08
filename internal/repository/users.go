@@ -14,6 +14,6 @@ func NewUsers(db *sql.DB) Users {
 	return Users{db: db}
 }
 
-func (r Users) ListWithBalance(ctx context.Context) ([]entity.User, error) {
+func (r Users) ListWithBalance(ctx context.Context) ([]entity.UserView, error) {
 	return nil, nil
 }

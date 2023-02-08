@@ -5,8 +5,10 @@ go 1.20
 require (
 	github.com/Shopify/sarama v1.38.1
 	github.com/go-testfixtures/testfixtures/v3 v3.8.1
+	github.com/google/uuid v1.3.0
 	github.com/jackc/pgx/v5 v5.2.0
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771
+	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (
@@ -33,5 +35,4 @@ require (
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

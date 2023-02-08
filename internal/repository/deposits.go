@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/google/uuid"
 )
 
 type Deposits struct {
@@ -21,15 +22,16 @@ func (r Deposits) Create(ctx context.Context, userID string, amount string) erro
 	}
 	defer tx.Rollback()
 
-	_, err = tx.Exec("INSERT INTO deposits (user_id, amount) VALUES ($1, $2)",
-		userID, amount)
+	id := uuid.New().String()
+	_, err = tx.Exec("INSERT INTO deposits (id, user_id, amount) VALUES ($1, $2, $3)",
+		id, userID, amount)
 	if err != nil {
 		return fmt.Errorf("create deposit for %s: %w", userID, err)
 	}
 	_, err = tx.Exec(`
 		INSERT INTO balances (user_id, amount)
 		VALUES ($1, $2)
-		ON CONFLICT (user_id) DO UPDATE SET amount = EXCLUDED.amount + $2;
+		ON CONFLICT (user_id) DO UPDATE SET amount = balances.amount + excluded.amount
 	`,
 		userID, amount)
 	if err != nil {

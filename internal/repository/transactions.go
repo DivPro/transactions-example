@@ -53,6 +53,6 @@ func (r Transactions) Create(ctx context.Context, userID, targetID string, amoun
 	return tx.Commit()
 }
 
-func (r Transactions) List(ctx context.Context) ([]entity.Transaction, error) {
+func (r Transactions) List(ctx context.Context) ([]entity.TransactionView, error) {
 	return nil, nil
 }

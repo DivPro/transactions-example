@@ -25,5 +25,5 @@ func (h Deposit) Handle(v entity.Deposit) error {
 	ctx, cancel := context.WithTimeout(context.Background(), h.timeout)
 	defer cancel()
 
-	return h.finance.CreateDeposit(ctx, &v)
+	return h.finance.CreateDeposit(ctx, v)
 }

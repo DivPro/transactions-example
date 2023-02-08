@@ -25,5 +25,5 @@ func (h Transaction) Handle(v entity.Transaction) error {
 	ctx, cancel := context.WithTimeout(context.Background(), h.timeout)
 	defer cancel()
 
-	return h.finance.CreateTransaction(ctx, &v)
+	return h.finance.CreateTransaction(ctx, v)
 }

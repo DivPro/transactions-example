@@ -1,14 +1,14 @@
-- user_id: adeb0c95-a333-4049-9c27-beb34ec3cd32
+- id: adeb0c95-a333-4049-9c27-beb34ec3cd32
   first_name: Василий
   last_name: Шахов
   second_name: Петрович
   created_at: 2023-02-08 08:52:00
-- user_id: f6678a4b-cbc3-4a55-afef-8c3ab47fa430
+- id: f6678a4b-cbc3-4a55-afef-8c3ab47fa430
   first_name: Леонид
   last_name: Леви
   second_name: Айзикович
   created_at: 2023-02-05 18:34:42
-- user_id: 0a68a321-de8e-48ef-83b3-c256e087d310
+- id: 0a68a321-de8e-48ef-83b3-c256e087d310
   first_name: Алиса
   last_name: Игнатова
   second_name: Кирилловна

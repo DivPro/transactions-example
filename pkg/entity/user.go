@@ -2,7 +2,7 @@ package entity
 
 import "time"
 
-type User struct {
+type UserView struct {
 	UserID     string    `json:"user_id"`
 	FistName   string    `json:"fist_name"`
 	LastName   string    `json:"last_name"`
