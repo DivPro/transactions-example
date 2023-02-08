@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"context"
+	"time"
+
 	"github.com/divpro/transactions-example/internal/service"
 	"github.com/divpro/transactions-example/pkg/entity"
-	"time"
 )
 
 type Transaction struct {

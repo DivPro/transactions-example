@@ -2,6 +2,7 @@ package consumer
 
 import (
 	"encoding/json"
+
 	"github.com/Shopify/sarama"
 	"golang.org/x/exp/slog"
 )

@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	"github.com/divpro/transactions-example/pkg/entity"
+	"github.com/google/uuid"
 )
 
 type Transactions struct {
@@ -23,22 +25,22 @@ func (r Transactions) Create(ctx context.Context, userID, targetID string, amoun
 	defer tx.Rollback()
 
 	_, err = tx.Exec(`
-		INSERT INTO transactions (user_id, target_id, amount) VALUES
-	   ($1, $2, -$3),
-       ($2, $1, $3)
+		INSERT INTO transactions (id, user_id, target_id, amount) VALUES
+	   ($5, $1, $2, $3),
+       ($6, $2, $1, $4)
 	`,
-		userID, targetID, amount)
+		userID, targetID, "-"+amount, amount, uuid.New().String(), uuid.New().String())
 	if err != nil {
-		return fmt.Errorf("create deposit for %s: %w", userID, err)
+		return fmt.Errorf("create transaction for %s: %w", userID, err)
 	}
 	_, err = tx.Exec(`
 		INSERT INTO balances (user_id, amount)
-		VALUES ($1, -$2)
-		ON CONFLICT (user_id) DO UPDATE SET amount = EXCLUDED.amount - $2
+		VALUES ($1, $2)
+		ON CONFLICT (user_id) DO UPDATE SET amount = EXCLUDED.amount - $3
 	`,
-		userID, amount)
+		userID, "-"+amount, amount)
 	if err != nil {
-		return fmt.Errorf("create deposit for %s: %w", userID, err)
+		return fmt.Errorf("create transaction for %s: %w", userID, err)
 	}
 	_, err = tx.Exec(`
 		INSERT INTO balances (user_id, amount)
@@ -47,12 +49,33 @@ func (r Transactions) Create(ctx context.Context, userID, targetID string, amoun
 	`,
 		targetID, amount)
 	if err != nil {
-		return fmt.Errorf("create deposit for %s: %w", userID, err)
+		return fmt.Errorf("create transaction for %s: %w", userID, err)
 	}
 
 	return tx.Commit()
 }
 
 func (r Transactions) List(ctx context.Context) ([]entity.TransactionView, error) {
-	return nil, nil
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT id, user_id, target_id, amount, created_at
+		FROM transactions
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var res []entity.TransactionView
+	for rows.Next() {
+		var ent entity.TransactionView
+		if err := rows.Scan(&ent.ID, &ent.UserID, &ent.TargetID, &ent.Amount, &ent.CreatedAt); err != nil {
+			return nil, err
+		}
+		res = append(res, ent)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

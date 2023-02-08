@@ -3,18 +3,17 @@ package main
 import (
 	"database/sql"
 	"flag"
+	"log"
+	"os"
+
 	"github.com/divpro/transactions-example/internal/config"
 	"github.com/go-testfixtures/testfixtures/v3"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"golang.org/x/exp/slog"
 	"gopkg.in/yaml.v3"
-	"log"
-	"os"
 )
 
-var (
-	configPath string
-)
+var configPath string
 
 func init() {
 	flag.StringVar(&configPath, "config", "config.yml", "Configuration file name")

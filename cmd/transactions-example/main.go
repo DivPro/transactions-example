@@ -4,6 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"flag"
+	"log"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
+
 	"github.com/Shopify/sarama"
 	"github.com/divpro/transactions-example/internal/config"
 	"github.com/divpro/transactions-example/internal/consumer"
@@ -14,16 +20,9 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"golang.org/x/exp/slog"
 	"gopkg.in/yaml.v3"
-	"log"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
 )
 
-var (
-	configPath string
-)
+var configPath string
 
 func init() {
 	flag.StringVar(&configPath, "config", "config.yml", "Configuration file name")

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/divpro/transactions-example/pkg/entity"
 )
 
