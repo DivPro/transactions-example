@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/divpro/transactions-example/pkg/entity"
-	"github.com/google/uuid"
 )
 
 type Transactions struct {
@@ -17,7 +16,7 @@ func NewTransactions(db *sql.DB) Transactions {
 	return Transactions{db: db}
 }
 
-func (r Transactions) Create(ctx context.Context, userID, targetID string, amount string) error {
+func (r Transactions) Create(ctx context.Context, transaction entity.Transaction) error {
 	tx, err := r.db.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
 		return err
@@ -27,29 +26,29 @@ func (r Transactions) Create(ctx context.Context, userID, targetID string, amoun
 	_, err = tx.Exec(`
 		INSERT INTO transactions (id, user_id, target_id, amount) VALUES
 	   ($5, $1, $2, $3),
-       ($6, $2, $1, $4)
+       ($5, $2, $1, $4)
 	`,
-		userID, targetID, "-"+amount, amount, uuid.New().String(), uuid.New().String())
+		transaction.UserID, transaction.TargetID, "-"+transaction.Amount, transaction.Amount, transaction.ID)
 	if err != nil {
-		return fmt.Errorf("create transaction for %s: %w", userID, err)
+		return fmt.Errorf("create transaction %v: %w", transaction, err)
 	}
 	_, err = tx.Exec(`
 		INSERT INTO balances (user_id, amount)
 		VALUES ($1, $2)
 		ON CONFLICT (user_id) DO UPDATE SET amount = EXCLUDED.amount - $3
 	`,
-		userID, "-"+amount, amount)
+		transaction.UserID, "-"+transaction.Amount, transaction.Amount)
 	if err != nil {
-		return fmt.Errorf("create transaction for %s: %w", userID, err)
+		return fmt.Errorf("create transaction %v: %w", transaction, err)
 	}
 	_, err = tx.Exec(`
 		INSERT INTO balances (user_id, amount)
 		VALUES ($1, $2)
 		ON CONFLICT (user_id) DO UPDATE SET amount = EXCLUDED.amount + $2
 	`,
-		targetID, amount)
+		transaction.TargetID, transaction.Amount)
 	if err != nil {
-		return fmt.Errorf("create transaction for %s: %w", userID, err)
+		return fmt.Errorf("create transaction %v: %w", transaction, err)
 	}
 
 	return tx.Commit()

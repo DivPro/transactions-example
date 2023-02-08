@@ -7,11 +7,11 @@ import (
 )
 
 type Deposits interface {
-	Create(ctx context.Context, userID string, amount string) error
+	Create(ctx context.Context, deposit entity.Deposit) error
 }
 
 type Transactions interface {
-	Create(ctx context.Context, userID, targetID string, amount string) error
+	Create(ctx context.Context, transaction entity.Transaction) error
 	List(ctx context.Context) ([]entity.TransactionView, error)
 }
 
@@ -37,11 +37,11 @@ func NewFinance(deposits Deposits,
 }
 
 func (f Finance) CreateDeposit(ctx context.Context, deposit entity.Deposit) error {
-	return f.deposits.Create(ctx, deposit.UserID, deposit.Amount)
+	return f.deposits.Create(ctx, deposit)
 }
 
 func (f Finance) CreateTransaction(ctx context.Context, transaction entity.Transaction) error {
-	return f.transactions.Create(ctx, transaction.UserID, transaction.TargetID, transaction.Amount)
+	return f.transactions.Create(ctx, transaction)
 }
 
 func (f Finance) ListTransactions(ctx context.Context) ([]entity.TransactionView, error) {
